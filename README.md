@@ -69,6 +69,29 @@ app.get('/users', async (c) => {
 });
 ```
 
+## Environment Variables
+
+This project uses Cloudflare Workers for deployment, which handles environment variables differently than traditional Node.js applications:
+
+### Development Environment
+- Copy `.env.example` to `.env` (for local development only)
+- Run `pnpm dev` to start the development server which will use these variables
+
+### Production Environment
+- Public variables: Add them to the `vars` section in `wrangler.jsonc`
+- Secret variables: Use Wrangler's secret management system:
+  ```
+  npx wrangler secret put BETTER_AUTH_SECRET
+  ```
+  This command will prompt you to enter the secret value securely.
+
+### Required Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| BETTER_AUTH_URL | The base URL of your application | `http://localhost:8787` (dev) or `https://your-app.workers.dev` (prod) |
+| BETTER_AUTH_SECRET | Secret key for authentication (32+ chars) | (Set as a secret, not in your code) |
+
 ## Troubleshooting
 
 ### Command not found: wrangler

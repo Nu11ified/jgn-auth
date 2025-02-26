@@ -22,7 +22,7 @@
 		}
 	],
 	"vars": { 
-		"BETTER_AUTH_URL": "https://jgn-auth.your-domain.com"
+		"BETTER_AUTH_URL": "https://jgn-auth.justicerp.workers.dev"
 	}
 	// Uncomment and add a comma above if needed:
 	// "assets": { "directory": "./public/", "binding": "ASSETS" }
