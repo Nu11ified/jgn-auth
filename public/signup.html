@@ -303,6 +303,8 @@
         statusMessage.style.display = 'none';
         
         try {
+          console.log('Sending signup request:', { name, email, password: '******' });
+          
           const response = await fetch('/api/auth/sign-up', {
             method: 'POST',
             headers: {
@@ -312,10 +314,31 @@
             credentials: 'same-origin'
           });
           
-          const data = await response.json();
+          console.log('Signup response status:', response.status);
+          console.log('Signup response headers:', Object.fromEntries([...response.headers]));
+          
+          let data;
+          let errorMessage = 'Sign up failed. Please try again.';
+          
+          try {
+            // Safely try to parse the JSON
+            const responseText = await response.text();
+            console.log('Raw response text:', responseText);
+            
+            if (responseText.trim()) {
+              data = JSON.parse(responseText);
+              console.log('Parsed response data:', data);
+            } else {
+              console.error('Empty response received from server');
+              errorMessage = 'Server returned an empty response. Please check server configuration.';
+            }
+          } catch (parseError) {
+            console.error('Error parsing JSON response:', parseError);
+            errorMessage = 'Invalid response from server. Please verify the API is working correctly.';
+          }
           
           if (!response.ok) {
-            throw new Error(data.message || 'Sign up failed. Please try again.');
+            throw new Error((data && data.message) || errorMessage);
           }
           
           // Success - sign in the user directly
@@ -329,8 +352,18 @@
               credentials: 'same-origin'
             });
             
+            let signInData;
+            try {
+              const signInText = await signInResponse.text();
+              if (signInText.trim()) {
+                signInData = JSON.parse(signInText);
+              }
+            } catch (parseError) {
+              console.error('Error parsing sign-in response:', parseError);
+            }
+            
             if (!signInResponse.ok) {
-              showStatus('Account created! Please sign in.', 'success');
+              showStatus('Account created! Please sign in manually.', 'success');
               setTimeout(() => {
                 window.location.href = '/';
               }, 2000);
@@ -341,13 +374,14 @@
             showStatus('Account created successfully! Redirecting...', 'success');
             window.location.href = '/profile.html';
           } catch (signInError) {
-            showStatus('Account created! Please sign in.', 'success');
+            showStatus('Account created! Please sign in manually.', 'success');
             setTimeout(() => {
               window.location.href = '/';
             }, 2000);
           }
         } catch (error) {
           showStatus(error.message || 'Sign up failed. Please try again.', 'error');
+          console.error('Sign up error:', error);
           
           // Reset button
           submitButton.disabled = false;

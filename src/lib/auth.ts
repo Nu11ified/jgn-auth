@@ -12,6 +12,8 @@ export const getAuth = (d1: D1Database) => {
   return betterAuth({
     database: drizzleAdapter(db, { provider: "sqlite" }),
     emailAndPassword: { enabled: true },
+    debug: true,
+    strictConfig: false,  // More permissive with configuration issues
     // Uncomment and configure as needed:
     // socialProviders: { 
     //   github: { 
