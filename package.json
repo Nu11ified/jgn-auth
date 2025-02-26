@@ -3,13 +3,26 @@
 	"scripts": {
 		"dev": "wrangler dev",
 		"deploy": "wrangler deploy --minify",
-		"cf-typegen": "wrangler types --env-interface CloudflareBindings"
+		"cf-typegen": "wrangler types --env-interface CloudflareBindings",
+		"generate": "drizzle-kit generate:sqlite",
+		"migrate": "wrangler d1 migrations apply jgn_auth_db",
+		"migrate:local": "wrangler d1 migrations apply jgn_auth_db --local",
+		"studio": "drizzle-kit studio",
+		"auth:generate": "npx @better-auth/cli generate --config auth.config.ts",
+		"auth:migrate": "npx @better-auth/cli migrate --config auth.config.ts",
+		"db:create": "wrangler d1 create jgn_auth_db"
 	},
 	"dependencies": {
+		"better-auth": "^1.1.21",
+		"drizzle-orm": "^0.40.0",
 		"hono": "^4.7.2"
 	},
 	"devDependencies": {
+		"@better-auth/cli": "^1.1.21",
 		"@cloudflare/workers-types": "^4.20250224.0",
+		"@types/better-sqlite3": "^7.6.12",
+		"better-sqlite3": "^11.8.1",
+		"drizzle-kit": "^0.30.4",
 		"wrangler": "^3.109.3"
 	}
 }
