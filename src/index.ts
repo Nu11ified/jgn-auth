@@ -39,14 +39,12 @@ app.on(['POST', 'GET'], '/api/auth/*', (c) => {
 
 // Home route
 app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
-
-// User data route
-app.get('/users', async (c) => {
-  const db = createDb(c.env.DB)
-  const result = await db.select().from(users).all()
-  return c.json(result)
+  // Redirect to profile if authenticated, otherwise show login page
+  const user = c.get('user');
+  if (user) {
+    return Response.redirect(`${new URL(c.req.url).origin}/profile.html`, 302);
+  }
+  return c.env.ASSETS.fetch(c.req.raw);
 })
 
 // Session check route
@@ -57,6 +55,26 @@ app.get('/session', (c) => {
     authenticated: !!user,
     ...(user && { user, session: c.get('session') })
   }, user ? 200 : 401);
+});
+
+// User data route
+app.get('/users', async (c) => {
+  const db = createDb(c.env.DB)
+  const result = await db.select().from(users).all()
+  return c.json(result)
+})
+
+// Serve static assets for all other routes
+app.get('*', async (c) => {
+  // Try to serve the asset
+  const response = await c.env.ASSETS.fetch(c.req.raw);
+  
+  // If the asset is not found, serve the index.html page
+  if (response.status === 404) {
+    return c.env.ASSETS.fetch(new Request(`${new URL(c.req.url).origin}/index.html`));
+  }
+  
+  return response;
 });
 
 export default app

@@ -2,4 +2,5 @@
 
 interface CloudflareBindings {
 	DB: D1Database;
+	ASSETS: Fetcher;
 }

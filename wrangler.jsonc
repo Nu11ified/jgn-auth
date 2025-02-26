@@ -23,9 +23,8 @@
 	],
 	"vars": { 
 		"BETTER_AUTH_URL": "https://jgn-auth.justicerp.workers.dev"
-	}
-	// Uncomment and add a comma above if needed:
-	// "assets": { "directory": "./public/", "binding": "ASSETS" }
+	},
+	"assets": { "directory": "./public/", "binding": "ASSETS" }
 	
 	// Note: For BETTER_AUTH_SECRET, use:
 	// npx wrangler secret put BETTER_AUTH_SECRET

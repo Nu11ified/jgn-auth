@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile | JGN Auth</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/modern-normalize@2.0.0/modern-normalize.min.css">
+  <style>
+    :root {
+      --primary-color: #6366f1;
+      --primary-hover: #4f46e5;
+      --text-color: #1f2937;
+      --light-text: #6b7280;
+      --border-color: #e5e7eb;
+      --bg-color: #f9fafb;
+      --card-bg: #ffffff;
+      --error-color: #ef4444;
+      --success-color: #10b981;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text-color);
+      background-color: var(--bg-color);
+      line-height: 1.5;
+      padding: 0;
+      margin: 0;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--primary-color);
+    }
+    
+    h1 {
+      font-size: 28px;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+    }
+    
+    .subtitle {
+      color: var(--light-text);
+      margin: 0;
+      font-size: 16px;
+    }
+    
+    .profile-card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+    
+    .profile-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 600;
+      margin-right: 24px;
+    }
+    
+    .profile-name {
+      flex: 1;
+    }
+    
+    .profile-name h2 {
+      margin: 0 0 4px 0;
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    .profile-name p {
+      margin: 0;
+      color: var(--light-text);
+    }
+    
+    .profile-info {
+      margin-bottom: 32px;
+    }
+    
+    .info-item {
+      margin-bottom: 16px;
+    }
+    
+    .info-label {
+      font-size: 14px;
+      color: var(--light-text);
+      margin-bottom: 4px;
+    }
+    
+    .info-value {
+      font-size: 16px;
+    }
+    
+    .json-data {
+      background-color: var(--bg-color);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+      overflow-x: auto;
+      margin-top: 24px;
+    }
+    
+    .button-group {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 32px;
+    }
+    
+    button {
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .primary-button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+    }
+    
+    .primary-button:hover {
+      background-color: var(--primary-hover);
+    }
+    
+    .secondary-button {
+      background-color: transparent;
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+      margin-right: 8px;
+    }
+    
+    .secondary-button:hover {
+      background-color: var(--bg-color);
+    }
+    
+    .danger-button {
+      background-color: var(--error-color);
+      color: white;
+      border: none;
+    }
+    
+    .danger-button:hover {
+      background-color: #dc2626;
+    }
+    
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+    }
+    
+    .loading-spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top: 4px solid var(--primary-color);
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 16px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .error-container {
+      text-align: center;
+      color: var(--error-color);
+      padding: 32px;
+    }
+    
+    .error-container h2 {
+      margin-top: 0;
+    }
+    
+    .error-container p {
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">JGN Auth</div>
+      <h1>Your Profile</h1>
+      <p class="subtitle">View and manage your account information</p>
+    </div>
+    
+    <div id="content">
+      <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>Loading profile information...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      const contentElement = document.getElementById('content');
+      
+      // Utility function to create profile content
+      function createProfileContent(userData, sessionData) {
+        // Get initials for avatar
+        let initials = 'U';
+        if (userData.name) {
+          const nameParts = userData.name.split(' ');
+          if (nameParts.length > 1) {
+            initials = `${nameParts[0][0]}${nameParts[nameParts.length-1][0]}`;
+          } else {
+            initials = userData.name[0];
+          }
+        } else if (userData.email) {
+          initials = userData.email[0].toUpperCase();
+        }
+        
+        return `
+          <div class="profile-card">
+            <div class="profile-header">
+              <div class="avatar">${initials}</div>
+              <div class="profile-name">
+                <h2>${userData.name || 'User'}</h2>
+                <p>${userData.email}</p>
+              </div>
+            </div>
+            
+            <div class="profile-info">
+              <div class="info-item">
+                <div class="info-label">User ID</div>
+                <div class="info-value">${userData.id}</div>
+              </div>
+              
+              <div class="info-item">
+                <div class="info-label">Email</div>
+                <div class="info-value">${userData.email}</div>
+              </div>
+              
+              ${userData.name ? `
+              <div class="info-item">
+                <div class="info-label">Name</div>
+                <div class="info-value">${userData.name}</div>
+              </div>
+              ` : ''}
+              
+              <div class="info-item">
+                <div class="info-label">Email Verified</div>
+                <div class="info-value">${userData.emailVerified ? 'Yes' : 'No'}</div>
+              </div>
+              
+              <div class="info-item">
+                <div class="info-label">Created At</div>
+                <div class="info-value">${new Date(userData.createdAt).toLocaleString()}</div>
+              </div>
+              
+              <div class="info-item">
+                <div class="info-label">Updated At</div>
+                <div class="info-value">${new Date(userData.updatedAt).toLocaleString()}</div>
+              </div>
+              
+              <div class="info-item">
+                <div class="info-label">Raw User Data</div>
+                <div class="json-data">${JSON.stringify(userData, null, 2)}</div>
+              </div>
+              
+              <div class="info-item">
+                <div class="info-label">Session Data</div>
+                <div class="json-data">${JSON.stringify(sessionData, null, 2)}</div>
+              </div>
+            </div>
+            
+            <div class="button-group">
+              <button class="secondary-button" id="refresh-button">Refresh Data</button>
+              <button class="danger-button" id="signout-button">Sign Out</button>
+            </div>
+          </div>
+        `;
+      }
+      
+      // Function to create error content
+      function createErrorContent(message) {
+        return `
+          <div class="error-container">
+            <h2>Authentication Error</h2>
+            <p>${message}</p>
+            <button class="primary-button" onclick="window.location.href='/'">Go to Sign In</button>
+          </div>
+        `;
+      }
+      
+      // Function to load profile data
+      async function loadProfileData() {
+        try {
+          // Set loading state
+          contentElement.innerHTML = `
+            <div class="loading-container">
+              <div class="loading-spinner"></div>
+              <p>Loading profile information...</p>
+            </div>
+          `;
+          
+          // Fetch session data
+          const response = await fetch('/session', {
+            credentials: 'same-origin'
+          });
+          
+          if (!response.ok) {
+            throw new Error('Not authenticated');
+          }
+          
+          const data = await response.json();
+          
+          if (!data.authenticated || !data.user) {
+            throw new Error('Not authenticated');
+          }
+          
+          // Render profile with user and session data
+          contentElement.innerHTML = createProfileContent(data.user, data.session);
+          
+          // Add event listeners
+          document.getElementById('refresh-button').addEventListener('click', loadProfileData);
+          document.getElementById('signout-button').addEventListener('click', signOut);
+        } catch (error) {
+          contentElement.innerHTML = createErrorContent(
+            error.message || 'You must be signed in to view this page.'
+          );
+        }
+      }
+      
+      // Function to sign out
+      async function signOut() {
+        try {
+          const response = await fetch('/api/auth/sign-out', {
+            method: 'POST',
+            credentials: 'same-origin'
+          });
+          
+          if (!response.ok) {
+            throw new Error('Failed to sign out');
+          }
+          
+          // Redirect to sign in page
+          window.location.href = '/';
+        } catch (error) {
+          alert('Error signing out: ' + (error.message || 'Unknown error'));
+        }
+      }
+      
+      // Load profile data on page load
+      loadProfileData();
+    });
+  </script>
+</body>
+</html> 
